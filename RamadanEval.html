@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تقييم العبادات في رمضان</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      direction: rtl;
+      background-color: #f8f9fa;
+    }
+    .container {
+      max-width: 800px;
+      margin-top: 50px;
+    }
+    .card {
+      margin-bottom: 30px;
+    }
+    .form-group label {
+      font-weight: bold;
+    }
+    .score {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="text-center mb-4">تقييم العبادات في رمضان</h1>
+    <div class="card">
+      <div class="card-body">
+        <form id="evaluationForm">
+          <div id="categories-container">
+            <!-- يتم إضافة الفئات هنا بواسطة JavaScript -->
+          </div>
+          <div class="text-center">
+            <h2 class="score">المجموع: <span id="totalScore">0</span> / 100</h2>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const categories = [
+      { name: "الصلاة في وقتها", defaultMax: 65, points: 15 },
+      { name: "السنن الرواتب", defaultMax: 156, points: 10 },
+      { name: "صلاة التراويح", defaultMax: 13, points: 15 },
+      { name: "قيام الليل", defaultMax: 13, points: 10 },
+      { name: "قراءة القرآن", defaultMax: 13, points: 15 },
+      { name: "الأذكار اليومية", defaultMax: 13, points: 5 },
+      { name: "الذكر", defaultMax: 13, points: 5 },
+      { name: "الصدقة", defaultMax: 13, points: 5 },
+      { name: "صلة الرحم وفعل الخير من 10", defaultMax: 10, points: 5 },
+      { name: "الامتناع عن الغيبة وحفظ اللسان من 10", defaultMax: 10, points: 5 },
+      { name: "الدعاء 20 دقيقة يومياً", defaultMax: 13, points: 5 },
+    ];
+
+    let targets = {};
+    let achievements = {};
+
+    const categoriesContainer = document.getElementById('categories-container');
+    categories.forEach(cat => {
+      // إضافة عناصر الإدخال لكل فئة
+      const div = document.createElement('div');
+      div.classList.add('form-group', 'row');
+      div.innerHTML = `
+        <label class="col-sm-4 col-form-label">${cat.name}</label>
+        <div class="col-sm-4">
+          <input type="number" class="form-control" id="target-${cat.name}" value="${cat.defaultMax}" placeholder="الهدف" onchange="updateScore()">
+        </div>
+        <div class="col-sm-4">
+          <input type="number" class="form-control" id="achievement-${cat.name}" value="0" placeholder="المنجز" onchange="updateScore()">
+        </div>
+      `;
+      categoriesContainer.appendChild(div);
+
+      targets[cat.name] = cat.defaultMax;
+      achievements[cat.name] = 0;
+    });
+
+    function updateScore() {
+      let totalScore = 0;
+      categories.forEach(cat => {
+        const targetValue = parseFloat(document.getElementById(`target-${cat.name}`).value) || cat.defaultMax;
+        const achievementValue = parseFloat(document.getElementById(`achievement-${cat.name}`).value) || 0;
+        
+        targets[cat.name] = targetValue;
+        achievements[cat.name] = achievementValue;
+
+        totalScore += (Math.min(achievementValue, targetValue) / targetValue) * cat.points;
+      });
+      
+      document.getElementById('totalScore').textContent = totalScore.toFixed(2);
+    }
+
+    // تحديث المجموع عند تحميل الصفحة
+    updateScore();
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
